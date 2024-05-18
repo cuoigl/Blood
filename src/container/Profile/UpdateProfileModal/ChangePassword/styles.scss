@@ -1,0 +1,16 @@
+.change-pass-dialog {
+  text-align: center;
+  &__title {
+    align-items: center;
+    text-align: center;
+    display: flex;
+    &__content {
+      flex: 1;
+      font-weight: bold !important;
+    }
+  }
+
+  &__input {
+    margin: 12px 0 !important;
+  }
+}
