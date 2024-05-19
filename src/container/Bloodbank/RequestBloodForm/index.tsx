@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -9,7 +9,7 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-import { Typography } from "@mui/material";
+import Typography from "@mui/material/Typography";
 import { BloodTotalDTO, getCurrentUser, getFullAddress } from "src/utils";
 
 export default function RequestBloodForm({
@@ -26,26 +26,13 @@ export default function RequestBloodForm({
     setOpen(false);
   };
 
-  const handleChangeBlood = (value: BloodTotalDTO, index: number) => {
+  const handleChangeBlood = (value: BloodTotalDTO, selectedQuantity: number, index: number) => {
     const updatedQuantityTake = [...quantityTake];
-
-    const existingQuantity = updatedQuantityTake.find(
-      (item) => item.numberbloodid === value.numberbloodid
-    );
-
-    if (existingQuantity) {
-      updatedQuantityTake[index] = {
-        ...existingQuantity,
-        quantity: value.quantity,
-        take: null,
-      };
-    } else {
       updatedQuantityTake.push({
         numberbloodid: value.numberbloodid,
-        quantity: value.quantity,
+        quantity: selectedQuantity, // Sử dụng giá trị được chọn từ menu Select
       });
-    }
-
+  
     setQuantityTake(updatedQuantityTake);
   };
 
@@ -69,7 +56,7 @@ export default function RequestBloodForm({
 
         {data?.map((item, index) => {
           return (
-            <DialogContent>
+            <DialogContent key={index}>
               <Box noValidate component="form">
                 <FormControl sx={{ minWidth: 450 }}>
                   <InputLabel htmlFor="max-width">
@@ -77,14 +64,14 @@ export default function RequestBloodForm({
                   </InputLabel>
                   <Select
                     autoFocus
-                    onChange={() => handleChangeBlood(item, index)}
+                    onChange={(event) => handleChangeBlood(item, parseInt((event.target as HTMLSelectElement).value), index)}
                   >
-                    {Array.from({ length: item?.total ?? 0 }, (_, index) => (
+                    {Array.from({ length: item?.total ?? 0 }, (_, subIndex) => (
                       <MenuItem
-                        key={index + 1}
-                        value={quantityTake[index]?.quantity || 0}
+                        key={subIndex + 1}
+                        value={subIndex + 1}
                       >
-                        {index + 1}
+                        {subIndex + 1}
                       </MenuItem>
                     ))}
                   </Select>
@@ -96,8 +83,6 @@ export default function RequestBloodForm({
 
         <DialogActions>
           <Button onClick={handleClose}>Close</Button>
-        </DialogActions>
-        <DialogActions>
           <Button onClick={onRequestBlood}>Gửi</Button>
         </DialogActions>
       </Dialog>

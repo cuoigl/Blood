@@ -18,6 +18,7 @@ import Button from "src/components/Button";
 import RequestBloodForm from "../RequestBloodForm";
 import { ToastError } from "src/utils/toastOptions";
 import dayjs from "dayjs";
+import { log } from "console";
 
 type QuantityTake = {
   numberbloodid: number;
@@ -26,7 +27,7 @@ type QuantityTake = {
 
 const ListBlood: React.FC = () => {
   const { user } = useAuth();
-  let bloodTypeId;
+  const [bloodTypeId, setBloodTypeId] = useState(0);
   const currentUser = user?.userId ? user : getCurrentUser();
 
   const navigate = useNavigate();
@@ -45,7 +46,6 @@ const ListBlood: React.FC = () => {
   }, [currentUser?.userId]);
 
   const onRequestBlood = async () => {
-    // ToastError('Đang trong quá trình phát triển, xin lỗi vì sự bất tiện này!');
     const body = {
       hospitalid: currentUser?.userId,
       datetake: dayjs(),
@@ -56,18 +56,18 @@ const ListBlood: React.FC = () => {
     http.post(`Hopital/addtakeblood`, body).then((res) => {
       setListBlood(res?.data?.data);
     });
+    navigate("/manage/list-blood");
   };
 
   const handleAddBlood = () => {
     navigate("/manage/add-blood");
   };
 
-  const handleRequestBlood = (id: number, totalBloodDTOs: any) => {
-    if (bloodTypeId) bloodTypeId = id;
+  const handleRequestBlood = (bloodtypeid: number, totalBloodDTOs: any) => {
+    if (bloodtypeid) setBloodTypeId(bloodtypeid);
     setTotalBloodOfType(totalBloodDTOs);
     setOpen(true);
   };
-
   const table = useMaterialReactTable({
     columns: allColumns(handleRequestBlood),
     data: listBlood,

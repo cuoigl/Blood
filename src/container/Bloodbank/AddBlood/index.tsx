@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Autocomplete, Grid, TextField } from "@mui/material";
+import { Autocomplete, Grid, MenuItem, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { AddBloodForm, schema } from "./helpers";
@@ -14,35 +14,24 @@ import dayjs, { Dayjs } from "dayjs";
 import { useParams } from "react-router-dom";
 import LoadingCommon from "src/components/LoadingCircle";
 import bloodtypeid from "./bloodtype";
+import { format } from "date-fns";
 
-type Props = {};
-
-interface ITypeBlood {
-  bloodtypeid: number;
-  nameblood: string;
-}
-
-interface INumberBlood {
-  numberbloodid: number;
-  quantity: string;
-}
-
-const AddBlood: React.FC<Props> = () => {
+const AddBlood: React.FC = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [listDistricts, setListDistricts] = useState([]);
   const [listWards, setListWards] = useState([]);
+  const [quantity250, setQuantity250] = useState("0");
+  const [quantity350, setQuantity350] = useState("0");
+  const [quantity450, setQuantity450] = useState("0");
+  const [bloodtypes, setBloodtypes] = useState("");
 
   const { id } = useParams<{ id: string }>();
 
   const {
     handleSubmit,
-    register,
-    setValue,
-    control,
     reset,
     formState: { errors },
-    watch,
   } = useForm<AddBloodForm>({
     resolver: yupResolver<any>(schema),
     mode: "onChange",
@@ -64,26 +53,50 @@ const AddBlood: React.FC<Props> = () => {
         });
     }
   }, [id, reset]);
-
-  const onSubmit = (value) => {
+  const onSubmit = value => {
     setIsAdding(true);
+    const now = new Date();
+    const formattedNow = format(now, "yyyy/MM/dd");
     const hospitalId = JSON.parse(localStorage.getItem("currentUser"))?.userId;
-
-    const payload = { ...value, hospitalid: hospitalId, img: "" };
-
+    const payload = {
+      hospitalid: hospitalId,
+      datesend: formattedNow,
+      bloodtypeid: bloodtypes,
+      quantitySend: [],
+    };
+    if (parseInt(quantity250) > 0) {
+      payload.quantitySend.push({
+        numberbloodid: 1,
+        quantity: parseInt(quantity250),
+      });
+    }
+  
+    if (parseInt(quantity350) > 0) {
+      payload.quantitySend.push({
+        numberbloodid: 2,
+        quantity: parseInt(quantity350),
+      });
+    }
+  
+    if (parseInt(quantity450) > 0) {
+      payload.quantitySend.push({
+        numberbloodid: 3,
+        quantity: parseInt(quantity450),
+      });
+    }
+  
     http
-      .post("Hopital/AddSendBlood", payload)
+      .post("Hopital/addsendblood", payload)
       .then((res) => {
         toast.success("success");
         setIsAdding(false);
-        reset({});
       })
       .catch((err) => {
         setIsAdding(false);
         console.error("err", err);
       });
   };
-
+  
   return isLoading ? (
     <LoadingCommon additionalClass="h-[100vh]" />
   ) : (
@@ -93,42 +106,49 @@ const AddBlood: React.FC<Props> = () => {
         <div className="w-full pt-4">
           <form className="max-w-[600px]" onSubmit={handleSubmit(onSubmit)}>
             <Grid xs={12}>
-              <Grid xs={6} mb={2} gap={1}></Grid>
-
               <Grid xs={10} mb={2} gap={1}>
-                {/* <Controller
-                  control={control}
-                  name="ward"
-                  render={({ field: { onChange, value, ...fields } }) => {
-                    return (
-                      <Autocomplete
-                        disablePortal
-                        options={listWards}
-                        isOptionEqualToValue={({ value }, { value: _value }) =>
-                          value === _value
-                        }
-                        renderInput={(params) => {
-                          return (
-                            <TextField
-                              {...params}
-                              variant="outlined"
-                              label="Ward"
-                            />
-                          );
-                        }}
-                        {...fields}
-                        onChange={(_, option) => {
-                          onChange(option?.value);
-                        }}
-                        value={
-                          watchWard
-                            ? listWards.find((i) => i.value === watchWard)
-                            : null
-                        }
-                      />
-                    );
-                  }}
-                /> */}
+                <TextField
+                  select
+                  label="Nhóm máu"
+                  fullWidth
+                  value={bloodtypes}
+                  onChange={(e) => setBloodtypes(e.target.value)}
+                >
+                  <MenuItem value={2}>A</MenuItem>
+                  <MenuItem value={3}>B</MenuItem>
+                  <MenuItem value={4}>AB</MenuItem>
+                  <MenuItem value={5}>O</MenuItem>
+                </TextField>
+              </Grid>
+              <Grid xs={6} mb={2} gap={1}>
+                <TextField
+                  label="250ML"
+                  value={quantity250}
+                  onChange={(e) => setQuantity250(e.target.value)}
+                  type="number"
+                  fullWidth
+                  InputLabelProps={{ shrink: true }}
+                />
+              </Grid>
+              <Grid xs={6} mb={2} gap={1}>
+                <TextField
+                  label="350ML"
+                  value={quantity350}
+                  onChange={(e) => setQuantity350(e.target.value)}
+                  type="number"
+                  fullWidth
+                  InputLabelProps={{ shrink: true }}
+                />
+              </Grid>
+              <Grid xs={6} mb={2} gap={1}>
+                <TextField
+                  label="450ML"
+                  value={quantity450}
+                  onChange={(e) => setQuantity450(e.target.value)}
+                  type="number"
+                  fullWidth
+                  InputLabelProps={{ shrink: true }}
+                />
               </Grid>
             </Grid>
             <Button type="submit" isLoading={isAdding}>
