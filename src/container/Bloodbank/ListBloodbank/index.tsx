@@ -16,9 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { allColumns } from "./allColumns";
 import Button from "src/components/Button";
 import RequestBloodForm from "../RequestBloodForm";
-import { ToastError } from "src/utils/toastOptions";
 import dayjs from "dayjs";
-import { log } from "console";
 
 type QuantityTake = {
   numberbloodid: number;

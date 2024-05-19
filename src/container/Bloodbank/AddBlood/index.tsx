@@ -53,7 +53,7 @@ const AddBlood: React.FC = () => {
         });
     }
   }, [id, reset]);
-  const onSubmit = value => {
+  const onSubmit = (value) => {
     setIsAdding(true);
     const now = new Date();
     const formattedNow = format(now, "yyyy/MM/dd");
@@ -70,21 +70,21 @@ const AddBlood: React.FC = () => {
         quantity: parseInt(quantity250),
       });
     }
-  
+
     if (parseInt(quantity350) > 0) {
       payload.quantitySend.push({
         numberbloodid: 2,
         quantity: parseInt(quantity350),
       });
     }
-  
+
     if (parseInt(quantity450) > 0) {
       payload.quantitySend.push({
         numberbloodid: 3,
         quantity: parseInt(quantity450),
       });
     }
-  
+
     http
       .post("Hopital/addsendblood", payload)
       .then((res) => {
@@ -96,7 +96,7 @@ const AddBlood: React.FC = () => {
         console.error("err", err);
       });
   };
-  
+
   return isLoading ? (
     <LoadingCommon additionalClass="h-[100vh]" />
   ) : (
@@ -119,6 +119,11 @@ const AddBlood: React.FC = () => {
                   <MenuItem value={4}>AB</MenuItem>
                   <MenuItem value={5}>O</MenuItem>
                 </TextField>
+                {bloodtypes === "" && (
+                <p className="text-sm text-red-500 color-red">
+                  Vui lòng chọn nhóm máu
+                </p>
+              )}
               </Grid>
               <Grid xs={6} mb={2} gap={1}>
                 <TextField
@@ -150,6 +155,11 @@ const AddBlood: React.FC = () => {
                   InputLabelProps={{ shrink: true }}
                 />
               </Grid>
+              {quantity250 === "0" && quantity350 === "0" && quantity450 === "0" && (
+                <p className="text-sm text-red-500 color-red">
+                  Bạn cần nhập ít nhất một trong ba trường số lượng
+                </p>
+              )}
             </Grid>
             <Button type="submit" isLoading={isAdding}>
               {!!id ? "Cập nhật" : "Tạo"}
