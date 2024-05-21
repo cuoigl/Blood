@@ -45,7 +45,7 @@ const Sidebar = () => {
       {
          icon: <MdBloodtype />,
          title: 'Lấy máu',
-         path: '/manage/listtakeorsend',
+         path: '/manage/listtake',
          isDisplay: isManager,
       },
       {
