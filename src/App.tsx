@@ -18,6 +18,8 @@ import ListHospital from "./container/Hospital/ListHospital";
 import HomePage from "./container/Home";
 import DetailHospital from "./container/Hospital/DetailHospital";
 import ListRequest from "./container/Request/ListRequest";
+import ListTakeOrSend from "./container/TakeOrSend/ListTakeOrSend";
+import ListTake from "./container/TakeBloodPage/TakeBlood";
 import CreateEditRequest from "./container/Request/CreateEditRequest";
 import RequestDetail from "./container/Request/RequestDetail";
 import ListBloodInBloodBank from "./container/Bloodbank";
@@ -93,6 +95,14 @@ function App() {
         {
           path: "/manage/hospitals/:id",
           element: <DetailHospital />,
+        },
+        {
+          path: "/manage/listtakeorsend",
+          element: <ListTakeOrSend />,
+        },
+        {
+          path: "/manage/listtake",
+          element: <ListTake />,
         },
         {
           path: "/manage/blood-bank",

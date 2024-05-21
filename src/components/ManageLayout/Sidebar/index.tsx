@@ -37,6 +37,18 @@ const Sidebar = () => {
          isDisplay: isManager || isHospital,
       },
       {
+         icon: <MdBloodtype />,
+         title: 'Gửi máu',
+         path: '/manage/listtakeorsend',
+         isDisplay: isManager,
+      },
+      {
+         icon: <MdBloodtype />,
+         title: 'Lấy máu',
+         path: '/manage/listtakeorsend',
+         isDisplay: isManager,
+      },
+      {
          icon: <MdOutlineVolunteerActivism />,
          title: 'Hoạt động',
          path: '/manage/create-activities',
