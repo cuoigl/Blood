@@ -25,6 +25,7 @@ const ListRequest: React.FC = () => {
          http.get(`Hopital/gettakeblood?id=${requestId}`).then(res => {
             setListRequests(res?.data?.data);
          });
+         
       }
       if (currentUser?.role === Role.BloodBank) {
          http.get(`Hopital/gettakeblood?id=${requestId}`).then(res => {

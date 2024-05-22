@@ -65,7 +65,8 @@ export const allColumns: Array<MRT_ColumnDef<any>> = [
          const bloodTypeQuantities = quantityTakes.map(item => {
            const bloodType = item?.bloodtypes?.nameBlood;
            const quantity = item?.quantity;
-           return bloodType && quantity ? `${bloodType} số lượng: ${quantity}` : null;
+           const ml = item?.numberBlood?.quantity;
+           return bloodType && quantity ? `${bloodType} số lượng: ${quantity} - ${ml}ML` : null;
          }).filter(Boolean).join(', ');
      
          return <Typography fontSize={14}>{bloodTypeQuantities}</Typography>;
